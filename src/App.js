@@ -15,7 +15,7 @@ import { createStore } from 'redux'
 
 // intial store
 const initialStore = {
-	count: 78,
+	count: 0,
 }
 
 // reducer - function that is used to update state
@@ -25,8 +25,15 @@ const initialStore = {
 // return updates or old state
 const reducer = (state, action) => {
 	console.log({ state, action })
+
 	if (action.type === 'DECREASE') {
 		return { count: state.count - 1 }
+	}
+	if (action.type === 'INCREASE') {
+		return { count: state.count + 1 }
+	}
+	if (action.type === 'RESET') {
+		return { count: 0 }
 	}
 
 	return state
@@ -35,6 +42,9 @@ const reducer = (state, action) => {
 // store
 const store = createStore(reducer, initialStore)
 store.dispatch({ type: 'DECREASE' })
+store.dispatch({ type: 'INCREASE' })
+store.dispatch({ type: 'INCREASE' })
+store.dispatch({ type: 'RESET' })
 console.log(store.getState())
 
 function App() {
