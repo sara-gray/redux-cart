@@ -8,34 +8,29 @@ import cartItems from './cart-items'
 
 // stores data, think of state
 import { createStore } from 'redux'
-import { DECREASE, INCREASE } from './actions'
 import reducer from './reducer'
 
-// dispatch method - send actions to the store
-// actions (objects) - MUST HAVE TYPRE PROPERTY - what kind of action
-// DON'T MUTATE THE STATE - redux built on IMMUTABILITY (copy)
+// react-redux - Provider - wrapps app, connect - used in compnents
+import { Provider } from 'react-redux'
 
 // intial store
 const initialStore = {
-	count: 0,
-	name: 'sara',
+	cart: cartItems,
+	total: 105,
+	amount: 5,
 }
 
 // store
 const store = createStore(reducer, initialStore)
-store.dispatch({ type: DECREASE })
-store.dispatch({ type: INCREASE })
-store.dispatch({ type: INCREASE })
-console.log(store.getState())
 
 function App() {
 	// cart setup
 
 	return (
-		<main>
-			<Navbar cart={store.getState()} />
-			<CartContainer cart={cartItems} />
-		</main>
+		<Provider store={store}>
+			<Navbar />
+			<CartContainer />
+		</Provider>
 	)
 }
 
