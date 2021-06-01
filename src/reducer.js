@@ -17,8 +17,9 @@ const reducer = (state, action) => {
 			return state
 
 		case INCREASE:
+			const { id } = payload
 			let tempCart = state.cart.map((item) => {
-				console.log(item)
+				if (item.id === id) item = { ...item, amount: item.amount + 1 }
 				return item
 			})
 			return { ...state, cart: tempCart }
