@@ -21,7 +21,11 @@ const initialStore = {
 }
 
 // store
-const store = createStore(reducer, initialStore)
+const store = createStore(
+	reducer,
+	initialStore,
+	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
 
 function App() {
 	// cart setup

@@ -4,22 +4,32 @@
 // action - what happened/ what update
 // return updates or old state
 
-import { CLEAR_CART, REMOVE, DECREASE, INCREASE } from './actions'
+import { CLEAR_CART, REMOVE, DECREASE, INCREASE, GET_TOTALS } from './actions'
 
 const reducer = (state, action) => {
 	const { type, payload } = action
+	let tempCart = []
+
 	switch (type) {
 		case CLEAR_CART:
 			return { ...state, cart: [] }
 
 		case DECREASE:
-			console.log('decrease')
-			return state
+			tempCart = []
+			if (payload.amount === 1) {
+				tempCart = state.cart.filter((item) => item.id !== payload.id)
+			} else {
+				tempCart = state.cart.map((item) => {
+					if (item.id === payload.id)
+						item = { ...item, amount: item.amount - 1 }
+					return item
+				})
+			}
+			return { ...state, cart: tempCart }
 
 		case INCREASE:
-			const { id } = payload
-			let tempCart = state.cart.map((item) => {
-				if (item.id === id) item = { ...item, amount: item.amount + 1 }
+			tempCart = state.cart.map((item) => {
+				if (item.id === payload.id) item = { ...item, amount: item.amount + 1 }
 				return item
 			})
 			return { ...state, cart: tempCart }
@@ -29,6 +39,22 @@ const reducer = (state, action) => {
 				...state,
 				cart: state.cart.filter((item) => item.id !== payload.id),
 			}
+
+		case GET_TOTALS:
+			let { total, amount } = state.cart.reduce(
+				(cartTotal, cartItem) => {
+					const { price, amount } = cartItem
+					cartTotal.amount += amount
+					cartTotal.total += price * amount
+					return cartTotal
+				},
+				{
+					total: 0,
+					amount: 0,
+				}
+			)
+			total = parseFloat(total.toFixed(2))
+			return { ...state, total, amount }
 
 		default:
 			return state
