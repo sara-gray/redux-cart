@@ -4,9 +4,26 @@
 // action - what happened/ what update
 // return updates or old state
 
-import { CLEAR_CART, REMOVE, DECREASE, INCREASE, GET_TOTALS } from './actions'
+import {
+	CLEAR_CART,
+	REMOVE,
+	DECREASE,
+	INCREASE,
+	GET_TOTALS,
+	TOGGLE_AMOUNT,
+} from './actions'
 
-const reducer = (state, action) => {
+// items
+import cartItems from './cart-items'
+
+// intial store
+const initialStore = {
+	cart: cartItems,
+	total: 0,
+	amount: 0,
+}
+
+const reducer = (state = initialStore, action) => {
 	const { type, payload } = action
 	let tempCart = []
 
@@ -15,16 +32,11 @@ const reducer = (state, action) => {
 			return { ...state, cart: [] }
 
 		case DECREASE:
-			tempCart = []
-			if (payload.amount === 1) {
-				tempCart = state.cart.filter((item) => item.id !== payload.id)
-			} else {
-				tempCart = state.cart.map((item) => {
-					if (item.id === payload.id)
-						item = { ...item, amount: item.amount - 1 }
-					return item
-				})
-			}
+			tempCart = state.cart.map((item) => {
+				if (item.id === payload.id) item = { ...item, amount: item.amount - 1 }
+				return item
+			})
+
 			return { ...state, cart: tempCart }
 
 		case INCREASE:
@@ -55,6 +67,20 @@ const reducer = (state, action) => {
 			)
 			total = parseFloat(total.toFixed(2))
 			return { ...state, total, amount }
+
+		case TOGGLE_AMOUNT:
+			return {
+				...state,
+				cart: state.cart.map((item) => {
+					if (item.id === payload.id) {
+						if (payload.toggle === 'inc')
+							item = { ...item, amount: item.amount + 1 }
+						if (payload.toggle === 'dec')
+							item = { ...item, amount: item.amount - 1 }
+					}
+					return item
+				}),
+			}
 
 		default:
 			return state
